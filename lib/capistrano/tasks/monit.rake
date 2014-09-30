@@ -21,6 +21,16 @@ namespace :monit do
   task :restart do
     all_processes_do :restart
   end
+  
+  desc 'Enable monitoring of all processes'
+  task :monitor do
+    all_processes_do :monitor
+  end
+
+  desc 'Disable monitoring of all processes'
+  task :unmonitor do
+    all_processes_do :unmonitor
+  end
 
   def monit_do(*args)
     on roles :app do
