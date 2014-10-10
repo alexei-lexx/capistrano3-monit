@@ -13,18 +13,25 @@ Add the following to your `Capfile`:
 
 The following tasks will be available to you:
 
-    monit:status  # shows the output of running `monit status` on the server
-    monit:start   # sends a start signal to all monitored processes
-    monit:stop    # sends a stop signal to all monitored processes
-    monit:restart # sends a restart signal to all monitored processes
+    monit:status    # shows the output of running `monit status` on the server
+    monit:start     # sends a start signal to all monitored processes
+    monit:stop      # sends a stop signal to all monitored processes
+    monit:restart   # sends a restart signal to all monitored processes
+    monit:monitor   # enable monitoring of all processes
+    monit:unmonitor # disable monitoring of all processes
 
-Additionally, `monit:restart` will automatically be called as a dependency of
-the `deploy:restart` task.
+Tasks `monit:...` are not called automatically. You should add them in your
+deploy.rb. For example,
 
-Currently, the `start|stop|restart` tasks assume you only want to handle
-monitored processes related to the app being deployed. For this, the name of
-each process should contain the name of the application. For example, if you
-have the following configuration for your production stage:
+    before 'deploy:starting', 'monit:unmonitor'
+    after 'deploy:restart', 'monit:update'
+    after 'deploy:restart', 'monit:reload_service'
+    after 'deploy:restart', 'monit:monitor'
+
+Currently, the `start|stop|restart|monitor|unmonitor` tasks assume you only
+want to handle monitored processes related to the app being deployed. For this,
+the name of each process should contain the name of the application. For
+example, if you have the following configuration for your production stage:
 
     # config/deploy/production.rb
     set :application, 'production'
